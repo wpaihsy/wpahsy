@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>信息详情</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.15.3/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.19.4/moment-with-locales.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+</head>
+<body>
+<form id="form6" class="form-horizontal" role="form" style="margin-left:500px;margin-top:100px;width: 400px;"
+    method="post" action="/updateUser">
+    <!--<div class="form-group" hidden>-->
+        <!--<input class="form-control" type="text" id="per_id" data-field="id" name="id">-->
+        <!--<input class="form-control" type="text" id="per_password" data-field="password" name="password">-->
+        <!--<input class="form-control" type="text" id="per_createtime" data-field="createtime" name="createtime">-->
+        <!--<input class="form-control" type="text" id="per_status" data-field="status" name="status">-->
+    <!--</div>-->
+    <div class="form-group" style="width: 400px;">
+        <label stype="display:inline;width:100px">ID：</label>
+        <input type="text" class="form-control" id="det_id" name="main_id" style="display:inline;width:300px;"/>
+    </div>
+    <div class="form-group" style="width: 400px;">
+         <label stype="display:inline;width:100px">标　　题：</label>
+         <input type="text" class="form-control" id="det_title" name="title" style="display:inline;width:300px;" />
+    </div>
+    <div class="form-group" style="width: 400px;">
+        <label style="display:inline;width:100px">内　　容：</label>
+        <!--<input type="text" class="form-control" id="det_content" name="content" style="display:inline;width:300px;" />-->
+        <textarea class="form-control" id="det_content" name="content" rows="5" style="display:inline;width:400px;"></textarea>
+    </div>
+
+    <div class="form-group" style="width: 400px;">
+        <label style="display:inline;">更新时间：</label>
+        <input type="text" class="form-control" id="det_updatetime" name="updateTime" style="display:inline;width:300px;"/>
+    </div>
+    <div class="form-group" style="width: 400px;">
+        <label style="display:inline;">创建时间：</label>
+        <input type="text" class="form-control" id="det_createtime" name="createTime" style="display:inline;width:300px;"/>
+    </div>
+    <div class="form-group" style="width: 400px;">
+        <label style="display:inline;">作　　者：</label>
+        <input type="text" class="form-control" id="det_createUser" name="createUser" style="display:inline;width:300px;"/>
+    </div>
+
+</form>
+
+<script>
+
+    $(document).ready(function(){
+        var id;
+        $.ajax({
+            url: "/getSession",
+            async: false,
+            success: function (text) {
+                id = text[0];
+                $.alert("id为："+id);
+            },
+            error: function () {
+                $.alert("加载失败，请重新登录！");
+            }
+        });
+        // $.ajax({
+        //     url: "/findByUsername/"+username,
+        //     success:　function (tet) {
+        //         var id = $('#per_id').val().trim();
+        //         var password = $('#per_password').val().trim();
+        //         var phonenum = $("#per_phonenum").val().trim();
+        //         var nickname = $('#per_nickname').val().trim();
+        //         var sex = $('#per_sex').val().trim();
+        //         var age = $('#per_age').val().trim();
+        //         var email = $('#per_email').val().trim();
+        //         var qianming = $('#per_qianming').val().trim();
+        //         var tips = $('#per_tips').val().trim();
+        //         var createtime = $('#per_createtime').val().trim();
+        //         var status = $('#per_status').val().trim();
+        //         $('#per_username').val(username);
+        //         $('#per_id').val(tet[0].id);
+        //         $('#per_password').val(tet[0].password);
+        //         $('#per_nickname').val(tet[0].nickname);
+        //         $('#per_sex').val(tet[0].sex);
+        //         $('#per_age').val(tet[0].age);
+        //         $('#per_phonenum').val(tet[0].phonenum);
+        //         $('#per_qianming').val(tet[0].qianming);
+        //         $('#per_email').val(tet[0].email);
+        //         $('#per_tips').val(tet[0].tips);
+        //         $('#per_createtime').val(tet[0].createtime);
+        //         $('#per_status').val(tet[0].status);
+        //     },
+        //     error: function () {
+        //         $.alert("数据加载失败，请重试！");
+        //     }
+        // });
+    });
+
+    function register() {
+        $('#form6').submit();
+    }
+
+</script>
+</body>
+</html>

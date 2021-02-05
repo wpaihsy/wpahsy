@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.15.3/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.19.4/moment-with-locales.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+</head>
+<body>
+<form id="form" class="form-horizontal" role="form" action="/doLogin" method="post" style="margin-left:500px;margin-top:200px;width: 300px;">
+    <div class="form-group" style="width: 300px;">
+         <label for="username" stype="display:inline;">账户：</label>
+         <input type="text" class="form-control" id="username" name="username" style="display:inline;width:250px;"autocomplete="off" />
+    </div>
+    <div class="form-group" style="width: 300px;">
+        <label for="password" style="display:inline;">密码：</label>
+        <input type="text" class="form-control" id="password" name="password" style="display:inline;width:250px;"autocomplete="off" />
+    </div>
+    <button type="submit" class="btn btn-primary" style="width: 150px;margin-left: 75px;" onclick="login()">登录</button><br/>
+</form>
+<div style="margin-left: 500px;">
+    <a href="/register">没有账号？去注册</a>
+</div>
+
+<script>
+    function login() {
+        var username = $('#username').val().trim().toString();
+        var password = $('#password').val().trim().toString();
+        if (username.length ==0){
+            $.alert("用户名不能为空");
+        } else if (password.length == 0){
+            $.alert("密码不能为空！");
+        } else if (username.length == 0 && password.length == 0){
+            $.alert("用户名或密码不能为空！");
+        } else {
+            $('#form').submit();
+        }
+    }
+</script>
+</body>
+</html>

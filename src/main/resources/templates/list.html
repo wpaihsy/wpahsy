@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>展示</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.15.3/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.19.4/moment-with-locales.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <style>
+        #table{
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <div class="panel-body">
+        <div class="form-inline row">
+            <div class="input-group col-sm-2" style="margin-right: 10px; margin-left: 10px;" >
+                <input type="text" class="form-control" name="City" id="search_city" placeholder="请输入标题"/>
+            </div>
+
+            <div class="input-group date col-sm-2" id='datetimepicker1'>
+                <input type="text" class="form-control" name="Time" id="search_time" placeholder="请输入时间"/>
+                <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+
+            <div class="btn-group col-sm-2" style="margin-left: 10px;">
+                <button type="button" class="btn btn-default" onclick="search()">查询</button>
+                <!--<button type="button" class="btn btn-default" onclick="dele()">删除</button>-->
+                <button type="button" class="btn btn-default" onclick="add()">增加</button>
+                <!--<button type="button" class="btn btn-default" onclick="modify()">编辑</button>-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<table id="table" class="table table-hover">
+
+</table>
+
+<script>
+
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: moment.locale('zh-cn')
+        });
+        $('#datetimepicker2').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: moment.locale('zh-cn')
+        });
+        $('#datetimepicker3').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: moment.locale('zh-cn')
+        });
+
+        $('#table').bootstrapTable({
+            url: "/showList",
+            method: 'get',
+            striped: false,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10,25,50,100],
+            paginationPreText: '上一页',
+            paginationNextText: '下一页',
+            clickToSelect: true,
+            columns: InitColumns()
+        });
+
+        //隐藏列
+        $('#table').bootstrapTable("hideColumn","mainid");
+
+    });
+
+    function InitColumns() {
+       var columns = [
+            {
+                checkbox: true
+            },
+            {
+                field: "mainid",
+                title: "ID",
+                align: "center"
+            },
+            {
+                field: "title",
+                title: "标题",
+                align: "center",
+                formatter: linkFormatter
+            },
+            {
+                field: "createUser",
+                title: "作者",
+                align: "center"
+            },
+            {
+                field: "createTime",
+                title: "创建时间",
+                align: "center",
+                // formatter: function (v) {
+                //     return v + "℃";
+                // }
+            }
+        ];
+       return columns;
+    }
+
+    function linkFormatter(value, row, index) {
+        return "<span onclick='ShowDetails()'>" + value + "</span>";
+    }
+
+    function ShowDetails() {
+        var row = $("#table").bootstrapTable('getSelections');
+        var id = row[0].mainid;
+        $.ajax({
+            url: "/findById/"+id,
+            success: function (text) {
+               $.alert("数据加载："+JSON.stringify(text));
+               window.location.href="/details";
+            },
+            error: function (e) {
+                alert("加载失败！");
+            }
+        });
+    }
+
+    function actionFormatter(value, row){
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditById()\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteById()\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
+
+    function DeleteById() {
+        var row = $("#table").bootstrapTable('getSelections');
+        var id = row[0].mainid;
+        if (row.size > 1) {
+            alert("最多选择一项！");
+        } else if (row.size < 1) {
+            alert("请选择一项！");
+        } else {
+            $.ajax({
+               url:　"/deleteById/"+id,
+               success: function (text) {
+                   $.alert("删除成功!");
+                   $('#table').bootstrapTable('refresh');
+               },
+                error: function () {
+                    $.alert("删除失败。请稍后再试!");
+                }
+            });
+        }
+    }
+
+    function EditById() {
+        var row = $("#table").bootstrapTable('getSelections');
+        var id = row[0].mainid;
+        if (row.size > 1) {
+            alert("最多选择一项！");
+        } else if (row.size < 1) {
+            alert("请选择一项！");
+        } else {
+            $('#modalTable').modal('show');
+            $.ajax({
+                url: "/findById/"+id,
+                success: function (text) {
+                    var title = text.title;
+                    var content = text.content;
+                    var createtime = text.createTime;
+                    $('#createtime1').val(createtime);
+                    $('#mainid1').val(id);
+                    $("#title1").val(title);
+                    $("#content1").val(content);
+                },
+                error: function (e) {
+                    alert("加载失败！");
+                }
+            });
+        }
+    }
+
+</script>
+
+</body>
+</html>

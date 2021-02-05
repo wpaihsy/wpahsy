@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>信息</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.15.3/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
+    <script src="https://cdn.bootcss.com/moment.js/2.19.4/moment-with-locales.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <style>
+        #table{
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <div class="panel-body">
+        <div class="form-inline row">
+            <div class="input-group col-sm-2" style="margin-right: 10px; margin-left: 10px;" >
+                <input type="text" class="form-control" name="City" id="search_city" placeholder="请输入标题"/>
+            </div>
+
+            <div class="input-group date col-sm-2" id='datetimepicker1'>
+                <input type="text" class="form-control" name="Time" id="search_time" placeholder="请输入时间"/>
+                <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+
+            <div class="btn-group col-sm-2" style="margin-left: 10px;">
+                <button type="button" class="btn btn-default" onclick="search()">查询</button>
+                <!--<button type="button" class="btn btn-default" onclick="dele()">删除</button>-->
+                <button type="button" class="btn btn-default" onclick="add()">增加</button>
+                <!--<button type="button" class="btn btn-default" onclick="modify()">编辑</button>-->
+                <button type="button" class="btn btn-default" onclick="personal()">查看个人信息</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<table id="table" class="table table-hover"> </table>
+
+<div id="modalAdd" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 360px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">添加动态</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form4" class="form-horizontal" role="form" action="/add" method="post" onsubmit="return addInfo();">
+                    <div class="form-group">
+                        <div class="input-group col-sm-12">
+                            <input type="text" class="form-control" id="title" data-field="title" name="title" placeholder="请输入标题">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group col-sm-12">
+                            <textarea class="form-control" id="content" name="content" data-field="content" rows="5" placeholder="正文内容"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-11" style="text-align: center;">
+                            <button type="button" class="btn btn-secondary" onclick="submitAdd()">提交</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalTable" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 360px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">编辑动态</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form5" class="form-horizontal" role="form" action="/updateInfo" method="post" onsubmit="return savePro();">
+                    <div class="form-group" hidden>
+                        <label class="col-sm-3 control-label">ID</label>
+                        <div class="input-group col-sm-8">
+                            <input class="form-control" type="text" id="mainid1" data-field="mainid" name="mainid">
+                        </div>
+                    </div>
+                    <div class="form-group" hidden>
+                        <label class="col-sm-3 control-label">ID</label>
+                        <div class="input-group col-sm-8">
+                            <input class="form-control" type="text" id="createtime1" data-field="createTime" name="createTime">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group col-sm-12">
+                            <input type="text" class="form-control" id="title1" data-field="title" name="title" placeholder="请输入标题">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group col-sm-12">
+                            <textarea class="form-control" id="content1" name="content" data-field="content" rows="5" placeholder="正文内容"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-11" style="text-align: center;margin: 0 auto;">
+                            <button type="button" class="btn btn-secondary" onclick="Modify()">提交</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: moment.locale('zh-cn')
+        });
+        $('#datetimepicker2').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: moment.locale('zh-cn')
+        });
+        $('#datetimepicker3').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: moment.locale('zh-cn')
+        });
+
+        $('#table').bootstrapTable({
+            url: "/showInfo",
+            method: 'get',
+            striped: false,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10,25,50,100],
+            paginationPreText: '上一页',
+            paginationNextText: '下一页',
+            clickToSelect: true,
+            columns: InitColumns()
+        });
+
+        //隐藏列
+        $('#table').bootstrapTable("hideColumn","mainid");
+
+    });
+
+    function InitColumns() {
+       var columns = [
+            {
+                checkbox: true
+            },
+            {
+                field: "mainid",
+                title: "ID",
+                align: "center"
+            },
+            {
+                field: "title",
+                title: "标题",
+                align: "center"
+            },
+            {
+                field: "createUser",
+                title: "作者",
+                align: "center"
+            },
+            {
+                field: "createTime",
+                title: "创建时间",
+                align: "center",
+                // formatter: function (v) {
+                //     return v + "℃";
+                // }
+            },
+            {
+                field: "operation",
+                title: "操作",
+                width: 120,
+                align: "center",
+                formatter: actionFormatter
+            }
+        ];
+       return columns;
+    }
+    function actionFormatter(value, row){
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditById()\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteById()\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
+
+    function DeleteById() {
+        var row = $("#table").bootstrapTable('getSelections');
+        var id = row[0].mainid;
+        if (row.size > 1) {
+            alert("最多选择一项！");
+        } else if (row.size < 1) {
+            alert("请选择一项！");
+        } else {
+            $.ajax({
+               url:　"/deleteById/"+id,
+               success: function (text) {
+                   $.alert("删除成功!");
+                   $('#table').bootstrapTable('refresh');
+               },
+                error: function () {
+                    $.alert("删除失败。请稍后再试!");
+                }
+            });
+        }
+    }
+
+    function EditById() {
+        var row = $("#table").bootstrapTable('getSelections');
+        var id = row[0].mainid;
+        if (row.size > 1) {
+            alert("最多选择一项！");
+        } else if (row.size < 1) {
+            alert("请选择一项！");
+        } else {
+            $('#modalTable').modal('show');
+            $.ajax({
+                url: "/findById/"+id,
+                success: function (text) {
+                    var title = text.title;
+                    var content = text.content;
+                    var createtime = text.createTime;
+                    $('#createtime1').val(createtime);
+                    $('#mainid1').val(id);
+                    $("#title1").val(title);
+                    $("#content1").val(content);
+                },
+                error: function (e) {
+                    alert("加载失败！");
+                }
+            });
+        }
+    }
+
+    function dele() {
+        var row = $("#table").bootstrapTable('getSelections');
+        var ids = new Array();
+        $(row).each(function() {
+            ids.push(this.id);
+        });
+        $.ajax({
+            url: "/batchDelete",
+            type: "post",
+            traditional: true, //阻止深度序列化
+            data: {ids:ids},
+            success: function (text) {
+                alert("删除成功");
+                $('#table').bootstrapTable('refresh');
+            },
+            error: function () {
+                alert("删除失败！");
+            }
+        });
+    }
+
+    function add() {
+        $('#modalAdd').modal('show');
+    }
+
+    function personal() {
+        window.location.href = '/personal';
+    }
+
+    function submitAdd() {
+        var title = $("#title").val().trim();
+        var content = $("#content").val().trim();
+        if (title == "" || content == "" ) {
+            alert("标题和内容不能为空！");
+        } else {
+            $("#form4").submit();
+        }
+    }
+
+    function addInfo() {
+        $("#form4").ajaxSubmit(function(message) {
+            // 对表单进行提交后进行的操作，相当于ajax提交表单的success
+            $('#modalAdd').modal('hide');
+            $('#table').bootstrapTable('refresh');
+        });
+        return false; // 返回false，阻止跳转
+    }
+
+    function Modify() {
+        var title = $("#title1").val().trim();
+        var content = $("#content1").val().trim();
+        if (title == "" || content == "") {
+            alert("标题和内容不能为空！");
+        } else {
+            $("#form5").submit();
+        }
+    }
+
+    function savePro() {
+        $("#form5").ajaxSubmit(function(message) {
+            $('#modalTable').modal('hide');
+            $('#table').bootstrapTable('refresh');
+        });
+        return false;
+    }
+</script>
+
+</body>
+</html>
